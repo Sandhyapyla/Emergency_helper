@@ -7,16 +7,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sandhyapyla/Emergency-Help-Locator.git"
+    "url": "git+https://github.com/Sandhyapyla/Emergency_helper.git"
   },
-  "keywords": [],
+  "keywords": [
+    "emergency",
+    "help",
+    "directory"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Sandhyapyla/Emergency-Help-Locator/issues"
+    "url": "https://github.com/Sandhyapyla/Emergency_helper/issues"
   },
-  "homepage": "https://github.com/Sandhyapyla/Emergency-Help-Locator#readme",
-  "description": "",
+  "homepage": "https://github.com/Sandhyapyla/Emergency_helper#readme",
+  "description": "Emergency Help Directory - A full-stack application to locate emergency services",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
