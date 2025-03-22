@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews - Emergency Services Locator</title>
+    <link rel="stylesheet" href="css/shared.css">
+    <link rel="stylesheet" href="css/reviews.css">
+</head>
+<body>
+    <header>
+        <h1>Emergency Helpline Locator</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="reviews.html">Reviews</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>User Reviews</h2>
+        
+        <div class="review-form-container">
+            <h3>Share Your Experience</h3>
+            <form id="reviewForm" class="review-form">
+                <div class="form-group" style="--input-index: 0">
+                    <label for="name">Your Name:</label>
+                    <input type="text" id="name" required>
+                </div>
+                
+                <div class="form-group" style="--input-index: 1">
+                    <label for="rating">Rating:</label>
+                    <div class="rating-container">
+                        <input type="radio" id="star5" name="rating" value="5" required>
+                        <label for="star5">★</label>
+                        <input type="radio" id="star4" name="rating" value="4">
+                        <label for="star4">★</label>
+                        <input type="radio" id="star3" name="rating" value="3">
+                        <label for="star3">★</label>
+                        <input type="radio" id="star2" name="rating" value="2">
+                        <label for="star2">★</label>
+                        <input type="radio" id="star1" name="rating" value="1">
+                        <label for="star1">★</label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="--input-index: 2">
+                    <label for="comment">Your Review:</label>
+                    <textarea id="comment" required></textarea>
+                </div>
+
+                <button type="submit">Submit Review</button>
+            </form>
+        </div>
+
+        <div class="reviews-container">
+            <div class="review-card" style="--card-index: 0">
+                <div class="review-header">
+                    <h4>John Smith</h4>
+                    <div class="rating">★★★★★</div>
+                </div>
+                <p>"This app helped me find the nearest hospital during an emergency. The real-time updates and accurate information were invaluable. Highly recommended!"</p>
+            </div>
+
+            <div class="review-card" style="--card-index: 1">
+                <div class="review-header">
+                    <h4>Sarah Johnson</h4>
+                    <div class="rating">★★★★★</div>
+                </div>
+                <p>"Quick and reliable! Found the closest police station in seconds. The interface is user-friendly and the service locations are always up-to-date."</p>
+            </div>
+
+            <div class="review-card" style="--card-index: 2">
+                <div class="review-header">
+                    <h4>Mike Davis</h4>
+                    <div class="rating">★★★★☆</div>
+                </div>
+                <p>"Great service! The emergency contact information was accurate and helped me reach the fire department quickly. Would definitely recommend to others."</p>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Emergency Helpline Directory. All Rights Reserved.</p>
+    </footer>
+
+    <script src="js/reviews.js"></script>
+</body>
+</html>

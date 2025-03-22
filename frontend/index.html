@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Services Locator</title>
+    <link rel="stylesheet" href="css/shared.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/emergency-services.css">
+    <link rel="stylesheet" href="css/loading.css">
+</head>
+<body>
+    <div class="emergency-bg"></div>
+    <div class="loading-indicator"></div>
+    <header>
+        <h1>Emergency Helpline Locator</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="reviews.html">Reviews</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2 class="pulse-animation">🚨 Emergency Services Near You</h2>
+        <div class="emergency-services">
+            <div class="service-card">
+                <img src="images/police-officer-with-police-car-in-town.svg" alt="Police Emergency" class="service-image image-loading" loading="lazy">
+                <div class="service-content">
+                    <h3>Police Emergency</h3>
+                    <p>24/7 emergency response for law enforcement, crime reporting, and immediate police assistance. Our officers are trained to handle various emergency situations promptly and professionally.</p>
+                    <a href="tel:100" class="sos-button sos-police">🚔 Call Police (100)</a>
+                </div>
+            </div>
+            <div class="service-card">
+                <img src="images/undraw_medical-care_7m9g.svg" alt="Medical Emergency" class="service-image image-loading" loading="lazy">
+                <div class="service-content">
+                    <h3>Medical Emergency</h3>
+                    <p>Rapid medical response services available 24/7. Our ambulance services are equipped with advanced life support systems and trained medical professionals.</p>
+                    <a href="tel:108" class="sos-button sos-ambulance">🚑 Call Ambulance (108)</a>
+                </div>
+            </div>
+            <div class="service-card">
+                <img src="images/1300627480.svg" alt="Fire Emergency" class="service-image image-loading" loading="lazy">
+                <div class="service-content">
+                    <h3>Fire Emergency</h3>
+                    <p>Quick response fire emergency services with modern firefighting equipment and trained personnel ready to handle fire hazards and rescue operations.</p>
+                    <a href="tel:101" class="sos-button sos-fire">🚒 Call Fire Service (101)</a>
+                </div>
+            </div>
+        </div>
+        <div class="service-filters">
+            <button class="filter-btn active" data-type="all">All Services</button>
+            <button class="filter-btn" data-type="hospital">Hospitals 🏥</button>
+            <button class="filter-btn" data-type="police">Police Stations 🚔</button>
+            <button class="filter-btn" data-type="fire_station">Fire Stations 🚒</button>
+        </div>
+        <div id="map"></div>
+        <div id="legend" style="margin-top: 20px;">
+            <p>🔴 Hospitals | 🔵 Police Stations | 🟠 Fire Stations</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Emergency Helpline Directory. All Rights Reserved.</p>
+    </footer>
+
+    <script src="main.js"></script>
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlFXMbZBOgFeBbi8bVONKkKqLh_p9vn1c&libraries=places&callback=initMap" async defer></script>
+</body>
+</html>
