@@ -28,7 +28,7 @@ app.use('/api/places', require('./routes/places'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/reports', require('./routes/reports'));
-app.use('/api/chat', require('./routes/chats')); // Note: File is named chats.js
+app.use('/api/chat', require('./routes/chat')); // Updated to chat.js (singular)
 
 // Connect to MongoDB
 const mongoURI = process.env.MONGO_URI;
