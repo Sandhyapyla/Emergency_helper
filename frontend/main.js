@@ -2,12 +2,11 @@ let map;
 let service;
 let markers = [];
 let currentType = "all";
-let userLocation; // Store the user's location globally
+let userLocation = { lat: 17.3850, lng: 78.4867 }; // Default to Hyderabad, India
 let directionsService;
 let directionsRenderer;
 
 function initMap() {
-    // Initialize the map centered around a default location (Hyderabad, India)
     const defaultLocation = { lat: 17.3850, lng: 78.4867 }; // Default to Hyderabad, India
 
     map = new google.maps.Map(document.getElementById("map"), {
@@ -22,19 +21,17 @@ function initMap() {
 
     // Get user's location with high accuracy
     if (navigator.geolocation) {
-        console.log("Geolocation is supported. Requesting location..."); // Debug log
+        console.log("Geolocation is supported. Requesting location...");
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                console.log("Geolocation success:", position.coords); // Debug log
+                console.log("Geolocation success:", position.coords);
                 userLocation = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude,
                 };
 
-                // Update map center to user's location
                 map.setCenter(userLocation);
-                addMarker(userLocation, "Your Location", "🔵", false); // No info window for user marker
-
+                addMarker(userLocation, "Your Location", "🔵", false);
                 fetchNearbyPlaces(currentType, userLocation);
             },
             (error) => {
@@ -52,7 +49,7 @@ function initMap() {
                     default:
                         errorMessage += "An unknown error occurred. Using default location (Hyderabad, India).";
                 }
-                console.error("Geolocation error:", errorMessage); // Debug log
+                console.error("Geolocation error:", errorMessage);
                 alert(errorMessage);
                 userLocation = defaultLocation;
                 addMarker(userLocation, "Default Location (Hyderabad)", "🔵", false);
@@ -65,7 +62,7 @@ function initMap() {
             }
         );
     } else {
-        console.error("Geolocation is not supported by this browser."); // Debug log
+        console.error("Geolocation is not supported by this browser.");
         alert("Geolocation is not supported by this browser. Using default location (Hyderabad, India).");
         userLocation = defaultLocation;
         addMarker(userLocation, "Default Location (Hyderabad)", "🔵", false);
@@ -73,9 +70,8 @@ function initMap() {
     }
 }
 
-// Function to fetch nearby places based on the selected type
 function fetchNearbyPlaces(type, location) {
-    clearMarkers(); // Remove previous markers
+    clearMarkers();
 
     const placeType = type === "all" ? ["hospital", "police", "fire_station"] : [type];
 
@@ -99,7 +95,6 @@ function fetchNearbyPlaces(type, location) {
     });
 }
 
-// Function to add a marker
 function addMarker(position, title, emoji, addInfoWindow = true, type = null, place = null) {
     const pos = position.lat ? position : new google.maps.LatLng(position.lat(), position.lng());
 
@@ -121,13 +116,15 @@ function addMarker(position, title, emoji, addInfoWindow = true, type = null, pl
                     <p>${place.vicinity || "Address not available"}</p>
                     ${place.rating ? `<p>Rating: ${place.rating} ⭐</p>` : ""}
                     ${place.opening_hours ? `<p style="color: ${place.opening_hours.open_now ? "green" : "red"}">${place.opening_hours.open_now ? "Open Now" : "Closed"}</p>` : ""}
-                    ${type === "hospital" ? `<a href="#" onclick="getDirections(${pos.lat()}, ${pos.lng()})" style="display: block; margin-top: 10px; padding: 8px 12px; background-color: #4285F4; color: white; text-decoration: none; border-radius: 4px; text-align: center;">Get Directions</a>` : ""}
+                    ${type === "hospital" ? `
+                        <a href="#" onclick="getDirections(${pos.lat()}, ${pos.lng()})" style="display: block; margin-top: 10px; padding: 8px 12px; background-color: #4285F4; color: white; text-decoration: none; border-radius: 4px; text-align: center;">Get Directions</a>
+                        <a href="https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${pos.lat()},${pos.lng()}&travelmode=driving" target="_blank" style="display: block; margin-top: 5px; padding: 8px 12px; background-color: #34A853; color: white; text-decoration: none; border-radius: 4px; text-align: center;">Open in Google Maps</a>
+                    ` : ""}
                 </div>
             `,
         });
 
         marker.addListener("click", () => {
-            // Close all other info windows
             markers.forEach(m => m.infoWindow?.close());
             infoWindow.open(map, marker);
         });
@@ -138,7 +135,6 @@ function addMarker(position, title, emoji, addInfoWindow = true, type = null, pl
     markers.push(marker);
 }
 
-// Function to get directions to a hospital
 window.getDirections = function(lat, lng) {
     if (!userLocation) {
         alert("User location is not available. Please enable location services and try again.");
@@ -155,12 +151,12 @@ window.getDirections = function(lat, lng) {
         if (status === google.maps.DirectionsStatus.OK) {
             directionsRenderer.setDirections(result);
         } else {
-            alert("Could not calculate directions: " + status);
+            console.error("Directions API failed:", status, result);
+            alert("Could not calculate directions: " + status + ". Please ensure the Directions API is enabled and the API key is correctly configured. Alternatively, use the 'Open in Google Maps' link.");
         }
     });
 };
 
-// Function to clear existing markers
 function clearMarkers() {
     markers.forEach((marker) => {
         marker.setMap(null);
@@ -172,7 +168,6 @@ function clearMarkers() {
     directionsRenderer.setDirections({ routes: [] }); // Clear previous directions
 }
 
-// Function to get the right emoji for the marker
 function getEmoji(type) {
     switch (type) {
         case "hospital":
@@ -186,7 +181,6 @@ function getEmoji(type) {
     }
 }
 
-// Event listener for filter buttons
 document.querySelectorAll(".filter-btn").forEach((button) => {
     button.addEventListener("click", function () {
         document.querySelectorAll(".filter-btn").forEach((btn) => btn.classList.remove("active"));
@@ -204,11 +198,11 @@ document.querySelectorAll(".filter-btn").forEach((button) => {
                 },
                 (error) => {
                     console.error("Geolocation error on filter:", error);
-                    fetchNearbyPlaces(currentType, userLocation || { lat: 17.3850, lng: 78.4867 });
+                    fetchNearbyPlaces(currentType, userLocation);
                 }
             );
         } else {
-            fetchNearbyPlaces(currentType, userLocation || { lat: 17.3850, lng: 78.4867 });
+            fetchNearbyPlaces(currentType, userLocation);
         }
     });
 });
