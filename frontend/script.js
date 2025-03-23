@@ -1,16 +1,19 @@
 let map;
 let markers = [];
+let allMarkers = []; // Store all markers for filtering
 
 // Initialize Google Map
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 17.3850, lng: 78.4867 }, // Default to Hyderabad, India
+    center: { lat: 17.3850, lng: 78.4867 },
     zoom: 14,
-    styles: darkTheme, // Dark theme for UI
+    styles: darkTheme,
   });
 
-  // Get user's location with high accuracy
+  console.log("Checking for geolocation support...");
+
   if (navigator.geolocation) {
+    console.log("Geolocation is supported. Requesting location...");
     const locationOptions = {
       enableHighAccuracy: true,
       timeout: 10000,
@@ -19,12 +22,12 @@ function initMap() {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        console.log("Geolocation success:", position.coords);
         const userLocation = {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
         
-        // Add marker for user's location
         const userMarker = new google.maps.Marker({
           position: userLocation,
           map: map,
@@ -40,33 +43,34 @@ function initMap() {
           zIndex: 1000
         });
 
-        // Smooth animation to center the map
         map.panTo(userLocation);
-
-        // Fetch and display emergency services
         fetchEmergencyServices(userLocation.lat, userLocation.lng);
       },
       (error) => {
         let errorMessage = "Error detecting your location: ";
         switch(error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage += "Permission denied. Please enable location services.";
+            errorMessage += "Permission denied. Using default location (Hyderabad, India).";
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage += "Location information unavailable.";
+            errorMessage += "Location information unavailable. Using default location (Hyderabad, India).";
             break;
           case error.TIMEOUT:
-            errorMessage += "Request timed out. Please try again.";
+            errorMessage += "Request timed out. Using default location (Hyderabad, India).";
             break;
           default:
-            errorMessage += "An unknown error occurred.";
+            errorMessage += "An unknown error occurred. Using default location (Hyderabad, India).";
         }
+        console.error("Geolocation error:", errorMessage);
         alert(errorMessage);
+        fetchEmergencyServices(17.3850, 78.4867);
       },
       locationOptions
     );
   } else {
-    alert("Geolocation is not supported by this browser.");
+    console.error("Geolocation is not supported by this browser.");
+    alert("Geolocation is not supported by this browser. Using default location (Hyderabad, India).");
+    fetchEmergencyServices(17.3850, 78.4867);
   }
 }
 
@@ -76,9 +80,9 @@ async function fetchEmergencyServices(lat, lng) {
   loadingDiv.innerHTML = '<div style="text-align: center; padding: 20px;"><h3>Loading Emergency Services...</h3></div>';
   document.querySelector('.container').appendChild(loadingDiv);
 
-  // Clear existing markers
   markers.forEach(marker => marker.setMap(null));
   markers = [];
+  allMarkers = []; // Reset allMarkers for filtering
 
   try {
     console.log('Fetching emergency services for coordinates:', lat, lng);
@@ -94,7 +98,6 @@ async function fetchEmergencyServices(lat, lng) {
       throw new Error('No emergency services found in your area');
     }
 
-    // Display markers with service type and color coding
     const services = [
       { places: data.hospitals, color: "#FF0000", emoji: "🏥", type: "Hospital" },
       { places: data.policeStations, color: "#0000FF", emoji: "🚔", type: "Police Station" },
@@ -103,11 +106,11 @@ async function fetchEmergencyServices(lat, lng) {
 
     services.forEach(service => {
       if (service.places.length > 0) {
-        displayMarkers(service.places, service.color, service.emoji, service.type);
+        const newMarkers = displayMarkers(service.places, service.color, service.emoji, service.type);
+        allMarkers.push(...newMarkers);
       }
     });
 
-    // Add legend to the map
     const legend = document.createElement('div');
     legend.className = 'legend';
     legend.style.cssText = 'background: rgba(255,255,255,0.9); padding: 10px; margin: 10px; border-radius: 5px; font-family: Arial;';
@@ -131,6 +134,7 @@ async function fetchEmergencyServices(lat, lng) {
 
 // Display markers on Google Maps
 function displayMarkers(places, color, emoji, type) {
+  const newMarkers = []; // Store markers for this service type
   places.forEach((place) => {
     let iconPath;
     let iconScale = 1.5;
@@ -170,7 +174,7 @@ function displayMarkers(places, color, emoji, type) {
         lng: place.geometry.location.lng,
       },
       map,
-      title: place.name,
+      title: `${type}: ${place.name}`, // Include type in title for filtering
       animation: google.maps.Animation.DROP,
       icon: svgMarker
     });
@@ -196,7 +200,6 @@ function displayMarkers(places, color, emoji, type) {
     });
 
     marker.addListener("click", () => {
-      // Close all other info windows
       markers.forEach(m => m.infoWindow?.close());
       infoWindow.open(map, marker);
     });
@@ -204,11 +207,27 @@ function displayMarkers(places, color, emoji, type) {
     marker.infoWindow = infoWindow;
     markers.push(marker);
 
-    // Add hover effect
     marker.addListener("mouseover", () => {
       marker.setAnimation(google.maps.Animation.BOUNCE);
       setTimeout(() => marker.setAnimation(null), 750);
     });
+
+    newMarkers.push(marker);
+  });
+  return newMarkers;
+}
+
+// Filter services based on type
+function filterServices(type) {
+  allMarkers.forEach(marker => {
+    const markerType = marker.title.includes('Hospital') ? 'hospital' :
+                      marker.title.includes('Police Station') ? 'police' :
+                      marker.title.includes('Fire Station') ? 'fire' : '';
+    if (type === 'all' || markerType === type) {
+      marker.setVisible(true);
+    } else {
+      marker.setVisible(false);
+    }
   });
 }
 
