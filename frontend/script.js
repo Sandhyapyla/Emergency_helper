@@ -82,7 +82,7 @@ async function fetchEmergencyServices(lat, lng) {
 
   try {
     console.log('Fetching emergency services for coordinates:', lat, lng);
-    const response = await fetch(`http://localhost:5000/api/places/services?latitude=${lat}&longitude=${lng}`);
+    const response = await fetch(`https://emergency-helper-back.onrender.com/api/places/services?latitude=${lat}&longitude=${lng}`);
     if (!response.ok) {
       console.error('API Response not OK:', response.status, response.statusText);
       throw new Error(`HTTP error! status: ${response.status}`);
